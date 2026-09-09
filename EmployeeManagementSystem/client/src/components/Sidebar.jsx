@@ -18,7 +18,7 @@ const Sidebar = () => {
         setMobileMenuOpen(false);
     }, [pathname]);
 
-    const role = "ADMIN" || "EMPLOYEE"; // Replace with actual role from your authentication logic
+    const role = "" || "EMPLOYEE"; // Replace with actual role from your authentication logic
     
     const navItems = [
         { name: 'Dashboard', href: '/dashboard', icon:LayoutGridIcon },
