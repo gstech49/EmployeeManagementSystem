@@ -1,7 +1,7 @@
 
-import Employee from "../models/Employee";
+import Employee from "../models/Employee.js";
 import bcrypt from "bcrypt";
-import User from "../models/user";
+import User from "../models/User.js";
 //Get Employees
 
 //GET /api/employees
@@ -25,6 +25,28 @@ export const getEmployees = async (req, res) => {
     }
 }
 
+//GET /api/employees/:id
+export const getEmployeeById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const employee = await Employee.findById(id)
+            .populate('userId', 'email role')
+            .lean();
+        if (!employee) {
+            return res.status(404).json({ error: 'Employee not found' });
+        }
+        return res.json({
+            ...employee,
+            id: employee._id.toString(),
+            user: employee.userId
+                ? { email: employee.userId.email, role: employee.userId.role }
+                : null
+        });
+    } catch (error) {
+        return res.status(500).json({ error: 'Failed to fetch employee' });
+    }
+};
+
 //Create Employee
 
 //POST /api/employees
@@ -35,7 +57,11 @@ export const createEmployee = async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
         const hashed = await bcrypt.hash(password, 10);
-        const user = await User.createEmployee({ email, password: hashed, role: role || 'EMPLOYEE' });
+        const user = await User.create({ 
+            email, 
+            password: hashed, 
+            role: role || 'EMPLOYEE' 
+        });
         const employee = await Employee.create({
             userId: user._id,
             firstName,
