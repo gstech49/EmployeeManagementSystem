@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {protect} from '../middleware/authMiddleware.js';
+import {protect} from '../middleware/auth.js';
 import { getDashboard } from '../controllers/dashboardController.js';
 
 const dashboardRouter = Router();
